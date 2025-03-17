@@ -7,6 +7,8 @@ const cors = require('cors');
 const User = require('./Users');
 const Movie = require('./Movies'); // You're not using Movie, consider removing it
 
+require('dotenv').config();
+
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
@@ -69,7 +71,21 @@ router.post('/signin', async (req, res) => { // Use async/await
 
 router.route('/movies')
     .get(authJwtController.isAuthenticated, async (req, res) => {
-        return res.status(500).json({ success: false, message: 'GET request not supported' });
+
+        try {
+            const movies = await Movie.find({}); // Use await with Movie.find()
+
+            if (!movies) {
+                return res.status(404).json({ success: false, message: 'No movies found.' }); // 404 Not Found
+            }
+
+            res.json({ success: true, movies: movies });
+        }
+        catch (err) {
+            console.error(err); // Log the error
+            res.status(500).json({ success: false, message: 'Something went wrong. Please try again later.' }); // 500 Internal Server Error
+        }
+     
     })
     .post(authJwtController.isAuthenticated, async (req, res) => {
         return res.status(500).json({ success: false, message: 'POST request not supported' });
