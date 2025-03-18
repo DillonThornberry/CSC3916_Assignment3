@@ -89,8 +89,15 @@ router.route('/movies')
     })
     .post(authJwtController.isAuthenticated, async (req, res) => {
         return res.status(500).json({ success: false, message: 'POST request not supported' });
-    });
+    })
 
+    .put(authJwtController.isAuthenticated, async (req, res) => {
+      return res.status(500).json({ success: false, message: 'PUT request not supported' })
+    })
+    
+    .delete(authJwtController.isAuthenticated, async (req, res) => {
+      return res.status(500).json({ success: false, message: 'DELETE request not supported' });
+  });
 app.use('/', router);
 
 const PORT = process.env.PORT || 8080; // Define PORT before using it
